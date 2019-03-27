@@ -19,13 +19,7 @@ class BonusScore {
     }
 
     consume(turn) {
-        if (!this._bonusTurns[turn]) {
-            return false;
-        }
-
-        this._bonusTurns[turn] -= 1;
-
-        return true;
+        return this._bonusTurns[turn];
     }
 }
 
@@ -51,26 +45,26 @@ function makeFrames(turns) {
     const frames = new Frames();
 
     let score = 0;
-    // let bonusTurns = Array(12).fill(0);
+    // let bonusTurns = Array(MAX_TURNS).fill(0);
 
     const bonus = new BonusScore();
 
     for (let i=0; i<turns.length; i++) {
 
         const pins1 = turns[i];
-
-        while (bonus.consume(i)) {
-            score += pins1;
-        }
+        console.log(pins1);
+        score += pins1 * bonus.consume(i);
 
         if (pins1 === NUM_PINS) {
-            if (!frames.completed()) {
-                score += NUM_PINS;
-                bonus.add(i + 1);
-                bonus.add(i + 2);
-
-                frames.add([NUM_PINS]);
+            if (frames.completed()) {
+                continue;
             }
+
+            score += NUM_PINS;
+            bonus.add(i + 1);
+            bonus.add(i + 2);
+
+            frames.add([NUM_PINS]);
 
             console.log(`${(i+1).toString().padStart(2, '0')} : ${score} - ${bonus._bonusTurns}`);
 
@@ -81,27 +75,29 @@ function makeFrames(turns) {
             throw new Error('invalid throw: sequence incomplete');
         }
 
+        // @todo: isn't executed when last bonus throw. handle one throw per loop.
+
         i += 1 ;
         const pins2 = turns[i];
-        if (pins1 + pins2 === NUM_PINS) {
-            if (!frames.completed()) {
-                score += NUM_PINS;
-                bonus.add(i + 1);
+        console.log(pins2);
+        score += pins2 * bonus.consume(i);
 
-                frames.add([NUM_PINS]);
+        if (pins1 + pins2 === NUM_PINS) {
+            if (frames.completed()) {
+                continue;
             }
 
+            score += NUM_PINS;
+            bonus.add(i + 1);
+            frames.add([NUM_PINS]);
+        }
+
+        if (frames.completed()) {
             continue;
         }
 
-        while (bonus.consume()) {
-            score += pins2;
-        }
-
-        if (i < 10) {
-            score += pins1 + pins2;
-            frames.add([NUM_PINS]);
-        }
+        score += pins1 + pins2;
+        frames.add([NUM_PINS]);
     }
 
     return score;
@@ -120,7 +116,7 @@ const score = makeFrames([
     10,
 
     10,
-    10,
+    8,
 ]);
 
 console.log(score);
