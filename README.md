@@ -7,6 +7,8 @@ Assumptions:
 *
 
 ## Installation
+* Requires Node `v10+`
+
 ```
 $ npm i
 $ npm test

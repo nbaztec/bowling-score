@@ -21,9 +21,6 @@ function getScore(ballThrows) {
 
     score += pins + pins * bonus[i];
 
-    // console.log(i, pins, frames, bonus[i], '=', score);
-    // console.log(bonus);
-
     if (frames === FRAMES_PER_ROUND) {
       continue;
     }
