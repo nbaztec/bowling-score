@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const bowling = require('./bowling');
 
 const ballThrows = process.argv.slice(2).map(x => parseInt(x, 10));
